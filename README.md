@@ -17,6 +17,24 @@ A complete full-stack task management system with JWT authentication, PostgreSQL
 - **Type-Safe**: 100% TypeScript for full type safety
 - **Professional UI**: Shadcn/UI components with clean design
 
+## 🛠️ Tech Stack
+
+**Frontend:**
+- Next.js 14 with React 18
+- TypeScript
+- Tailwind CSS + Shadcn/UI
+- React Hook Form + Zod validation
+- TanStack Query (React Query)
+- Sonner notifications
+
+**Backend:**
+- Node.js + Express
+- TypeScript
+- Prisma ORM
+- PostgreSQL
+- JWT authentication
+- bcryptjs for password hashing
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -33,19 +51,21 @@ cd server
 npm install
 
 # Create .env file
-cp .env.example .env
-
-# Update DATABASE_URL and JWT_SECRET in .env
-# DATABASE_URL=postgresql://user:password@localhost:5432/dbname
-# JWT_SECRET=your-secret-key-min-32-chars
+cat > .env << EOF
+DATABASE_URL=postgresql://user:password@localhost:5432/taskdb
+JWT_SECRET=your-secret-key-min-32-chars
+NODE_ENV=development
+PORT=3001
+EOF
 
 # Run migrations
 npm run prisma:migrate
 
 # Start development server
 npm run dev
-# Server running on http://localhost:3001
 ```
+
+Server runs on http://localhost:3001
 
 ### Frontend Setup
 
@@ -55,16 +75,16 @@ cd client
 # Install dependencies
 npm install
 
-# Create .env.local
-cp .env.example .env.local
-
-# Update NEXT_PUBLIC_API_URL in .env.local
-# NEXT_PUBLIC_API_URL=http://localhost:3001
+# Create .env.local file
+cat > .env.local << EOF
+NEXT_PUBLIC_API_URL=http://localhost:3001
+EOF
 
 # Start development server
 npm run dev
-# Frontend running on http://localhost:3002
 ```
+
+Frontend runs on http://localhost:3002
 
 ## 📡 API Endpoints
 
@@ -80,7 +100,7 @@ GET    /auth/me                  - Get current user (protected)
 POST   /tasks                    - Create task
 GET    /tasks                    - Get all tasks
 GET    /tasks?search=title       - Search by title
-GET    /tasks?status=pending     - Filter by status (pending, in-progress, completed)
+GET    /tasks?status=pending     - Filter by status
 PUT    /tasks/:id                - Update task
 DELETE /tasks/:id                - Delete task
 ```
@@ -117,7 +137,7 @@ curl -X POST http://localhost:3001/tasks \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Complete project",
-    "description": "Finish the task app",
+    "description": "Finish the app",
     "status": "in-progress"
   }'
 ```
@@ -130,332 +150,184 @@ curl -X GET "http://localhost:3001/tasks?search=project&status=in-progress" \
 
 ### Using Postman
 
-Import the Postman collection: [Task-Management-API.postman_collection.json](./Task-Management-API.postman_collection.json)
-
+Import [Task-Management-API.postman_collection.json](./Task-Management-API.postman_collection.json):
 1. Open Postman → Click Import
 2. Select the JSON file
 3. Set `{{token}}` variable after login
-4. Run requests with pre-configured examples
-# DATABASE_URL="postgresql://user:password@localhost:5432/fullstack_db"
-# JWT_SECRET="your_secret_key"
-
-# Generate Prisma client
-npm run prisma:generate
-
-# Run migrations
-npm run prisma:migrate
-
-# Start development server
-npm run dev
-```
-
-Server runs on `http://localhost:3001`
-
-### Frontend Setup
-
-```bash
-cd client
-
-# Install dependencies
-npm install
-
-# Create .env.local file
-NEXT_PUBLIC_API_URL=http://localhost:3001
-
-# Start development server
-npm run dev
-```
-
-Frontend runs on `http://localhost:3000`
+4. Run requests
 
 ## 📁 Project Structure
 
 ```
 dev-intern-assignment/
-├── server/                          # Backend (Node.js + Express)
+├── server/                          # Backend (Express)
 │   ├── src/
-│   │   ├── index.ts                 # Express app entry point
-│   │   ├── lib/db.ts                # Prisma client
-│   │   ├── middleware/
-│   │   │   └── authMiddleware.ts    # JWT verification
-│   │   ├── routes/
-│   │   │   ├── auth.ts              # Authentication endpoints
-│   │   │   └── tasks.ts             # Task CRUD endpoints
-│   │   ├── controllers/
-│   │   │   └── taskController.ts    # Task business logic
-│   │   ├── services/
-│   │   │   └── taskService.ts       # Database operations
-│   │   └── validators/
-│   │       ├── authValidators.ts    # Auth schemas
-│   │       └── taskValidators.ts    # Task schemas
+│   │   ├── index.ts                 # Express app
+│   │   ├── middleware/              # JWT middleware
+│   │   ├── routes/                  # API routes
+│   │   ├── controllers/             # Route handlers
+│   │   ├── services/                # Database logic
+│   │   └── validators/              # Zod schemas
 │   ├── prisma/
 │   │   └── schema.prisma            # Database schema
-│   ├── package.json
-│   └── tsconfig.json
+│   ├── .env.example                 # Environment template
+│   └── package.json
 │
 ├── client/                          # Frontend (Next.js)
 │   ├── app/
-│   │   ├── layout.tsx               # Root layout
-│   │   ├── page.tsx                 # Home page
-│   │   ├── login/page.tsx           # Login page
-│   │   ├── signup/page.tsx          # Sign up page
-│   │   ├── dashboard/page.tsx       # Dashboard
-│   │   └── tasks/page.tsx           # Task management
-│   ├── components/
-│   │   ├── Navbar.tsx               # Navigation
-│   │   ├── ProtectedRoute.tsx       # Route protection
-│   │   ├── TaskCard.tsx             # Task display
-│   │   ├── CreateTaskDialog.tsx     # Create modal
-│   │   ├── EditTaskDialog.tsx       # Edit modal
-│   │   ├── SonnerToaster.tsx        # Notifications
-│   │   └── ui/                      # Shadcn/UI components
-│   ├── hooks/
-│   │   ├── useUser.ts               # User data hook
-│   │   └── useTasks.ts              # Task CRUD hooks
-│   ├── lib/
-│   │   ├── api.ts                   # Axios instance with JWT
-│   │   └── validators.ts            # Zod schemas
-│   ├── providers/
-│   │   └── QueryProvider.tsx        # React Query setup
-│   ├── middleware.ts                # Next.js auth middleware
-│   ├── package.json
-│   └── tsconfig.json
+│   │   ├── login/                   # Login page
+│   │   ├── signup/                  # Signup page
+│   │   ├── dashboard/               # Dashboard
+│   │   └── tasks/                   # Task management
+│   ├── components/                  # React components
+│   ├── hooks/                       # Custom hooks
+│   ├── lib/                         # Utilities
+│   ├── providers/                   # Context providers
+│   ├── middleware.ts                # Route protection
+│   ├── .env.example                 # Environment template
+│   └── package.json
 │
-└── SCALABILITY.md                   # Scaling guide
+├── DEPLOYMENT.md                    # Deployment guide
+├── GETTING_STARTED.md               # Setup guide
+├── test-api.ps1                     # API testing script
+└── Task-Management-API.postman_collection.json
 ```
 
-## 🔐 API Endpoints
+## 🔧 Environment Variables
 
-### Authentication
-```
-POST   /auth/signup              - Register new user
-POST   /auth/login               - Login user
-GET    /auth/me                  - Get current user (protected)
-```
-
-### Tasks (All require JWT token)
-```
-POST   /tasks                    - Create task
-GET    /tasks                    - Get all tasks (with search & filter)
-GET    /tasks?search=title       - Search tasks by title
-GET    /tasks?status=pending     - Filter by status
-PUT    /tasks/:id                - Update task
-DELETE /tasks/:id                - Delete task
-```
-
-## 📖 API Examples
-
-### Using cURL
-
-**Sign Up**
-```bash
-curl -X POST http://localhost:3001/auth/signup \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "John Doe",
-    "email": "john@example.com",
-    "password": "password123"
-  }'
-```
-
-**Login**
-```bash
-curl -X POST http://localhost:3001/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "john@example.com",
-    "password": "password123"
-  }'
-```
-
-**Get Current User**
-```bash
-curl -X GET http://localhost:3001/auth/me \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
-
-**Create Task**
-```bash
-curl -X POST http://localhost:3001/tasks \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "Complete project",
-    "description": "Finish the task management app",
-    "status": "in-progress"
-  }'
-```
-
-**Get All Tasks with Search**
-```bash
-curl -X GET "http://localhost:3001/tasks?search=project&status=in-progress" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
-
-**Update Task**
-```bash
-curl -X PUT http://localhost:3001/tasks/TASK_ID \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "Updated title",
-    "status": "completed"
-  }'
-```
-
-**Delete Task**
-```bash
-curl -X DELETE http://localhost:3001/tasks/TASK_ID \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
-
-### Using Postman
-
-Import the provided Postman collection: [Task-Management-API.postman_collection.json](./Task-Management-API.postman_collection.json)
-
-1. Open Postman
-2. Click "Import" → Select the JSON file
-3. Collection loads with all endpoints
-4. Set `{{token}}` and `{{taskId}}` variables in collection settings
-5. Run requests with pre-configured examples
-GET    /tasks                    - Get all tasks (supports ?search= and ?status=)
-PUT    /tasks/:id                - Update task
-DELETE /tasks/:id                - Delete task
-```
-
-## 🛠️ Tech Stack
-
-### Backend
-- **Node.js** - JavaScript runtime
-- **Express.js** - Web framework
-- **TypeScript** - Type safety
-- **Prisma** - ORM
-- **PostgreSQL** - Database
-- **JWT** - Authentication
-- **bcryptjs** - Password hashing
-- **Zod** - Data validation
-
-### Frontend
-- **Next.js 14** - React framework
-- **TypeScript** - Type safety
-- **React Hook Form** - Form management
-- **TanStack Query** - Data fetching
-- **Tailwind CSS** - Styling
-- **Shadcn/UI** - UI components
-- **Sonner** - Toast notifications
-- **Axios** - HTTP client
-
-## 📱 Responsive Design
-
-The application is fully responsive and works seamlessly on:
-- Desktop (1920px and above)
-- Tablet (768px - 1024px)
-- Mobile (320px - 767px)
-
-## 🔔 Notifications
-
-Toast notifications provide real-time feedback for:
-- ✅ Successful operations (create, update, delete)
-- ❌ Error handling
-- ℹ️ Information messages
-
-## 🔄 State Management
-
-- **React Query (TanStack Query)**: Server state management
-  - Automatic caching and invalidation
-  - Optimistic updates
-  - Background refetching
-  
-- **React Hook Form**: Client-side form state
-- **localStorage**: Persistent auth tokens
-
-## 📖 Authentication Flow
-
-1. **Sign Up**: User creates account → Password hashed → JWT generated
-2. **Login**: User logs in → JWT stored in localStorage & cookies
-3. **Protected Routes**: Middleware checks for valid JWT
-4. **API Requests**: Axios interceptor automatically adds JWT header
-5. **Token Expiration**: Handles 401 responses by clearing auth
-
-## 🌐 Production Deployment
-
-The application is deployed and ready to use:
-
-- **Frontend**: https://taskapp-gamma.vercel.app
-- **Backend API**: https://task-management-api-production.railway.app
-- **API Documentation**: See [Task-Management-API.postman_collection.json](./Task-Management-API.postman_collection.json)
-
-For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
-
-Quick deployment steps:
-1. Frontend: Push to GitHub → Vercel auto-deploys
-2. Backend: Deploy to Railway with PostgreSQL
-3. Update environment variables on production platforms
-4. Run database migrations: `npx prisma migrate deploy`
-
-## 🚀 Scalability
-
-For production deployment and scaling strategies, see [SCALABILITY.md](./SCALABILITY.md)
-
-Key features for scaling:
-- Redis caching layer
-- Refresh token implementation
-- Docker containerization
-- Load balancing with Nginx
-- Database optimization with indexes
-- Comprehensive monitoring setup
-
-## 📚 Environment Variables
-
-### Server (.env)
+### Backend (server/.env)
 ```env
-DATABASE_URL=postgresql://user:password@localhost:5432/fullstack_db
-JWT_SECRET=your-super-secret-jwt-key
+DATABASE_URL=postgresql://user:password@localhost:5432/taskdb
+JWT_SECRET=your-super-secret-key-min-32-chars
 NODE_ENV=development
 PORT=3001
 ```
 
-### Client (.env.local)
+### Frontend (client/.env.local)
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
 
+## 🏗️ Architecture
+
+**Frontend:**
+- Next.js 14 App Router for routing
+- Middleware for JWT token validation
+- Protected routes with component wrappers
+- React Query for server state management
+- React Hook Form for form state
+- Axios with JWT interceptor for API calls
+
+**Backend:**
+- Express.js with TypeScript
+- Controller-Service pattern for separation of concerns
+- Prisma ORM for database operations
+- JWT middleware for protected routes
+- Zod validation for request/response schemas
+- CORS enabled for frontend requests
+
+**Database:**
+- PostgreSQL with Prisma ORM
+- User model with unique email constraint
+- Task model with status enum
+- 1-to-Many relationship with cascade delete
+
 ## 🧪 Testing
 
-To test the application:
+```bash
+# Run API test script (from root directory)
+.\test-api.ps1
 
-1. Create a user account
-2. Login with credentials
-3. Create tasks
-4. Test search and filter functionality
-5. Edit and delete tasks
-6. Verify notifications appear correctly
-7. Test logout and re-login
+# Manual test flow:
+# 1. Signup with new email
+# 2. Login with credentials
+# 3. Create, update, delete tasks
+# 4. Test search and filter
+# 5. Verify notifications appear
+```
+
+## 🌐 Production Deployment
+
+### Frontend (Vercel)
+```bash
+# Push code to GitHub
+git push origin main
+
+# Go to https://vercel.com/dashboard
+# 1. Import your repository
+# 2. Set NEXT_PUBLIC_API_URL=https://your-backend-url
+# 3. Deploy
+```
+
+### Backend (Railway)
+```bash
+# Go to https://railway.app/dashboard
+# 1. Create new project
+# 2. Deploy from GitHub (select server directory)
+# 3. Add PostgreSQL database
+# 4. Set DATABASE_URL, JWT_SECRET, PORT
+# 5. Deploy
+```
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions.
+
+## 🔐 Security Features
+
+- **Password Hashing**: bcryptjs with 10-round salt
+- **JWT Tokens**: 7-day expiration
+- **Protected Routes**: Middleware-based verification
+- **Input Validation**: Zod schemas on frontend and backend
+- **CORS**: Configured for frontend domain
+- **No Secrets**: All secrets in environment variables
+- **Error Messages**: Safe, no sensitive data leakage
+
+## 📚 Documentation
+
+- [DEPLOYMENT.md](./DEPLOYMENT.md) - Production deployment guide
+- [GETTING_STARTED.md](./GETTING_STARTED.md) - Quick start and troubleshooting
+- [Task-Management-API.postman_collection.json](./Task-Management-API.postman_collection.json) - API documentation
 
 ## 🐛 Troubleshooting
 
-### Backend won't start
+**Backend won't start**
 - Check DATABASE_URL is correct
 - Ensure PostgreSQL is running
-- Run `npm run prisma:migrate`
+- Run: `npm run prisma:migrate`
 
-### Frontend won't connect to backend
+**Frontend won't connect to backend**
 - Verify NEXT_PUBLIC_API_URL is correct
 - Ensure backend is running on port 3001
-- Check for CORS issues in browser console
+- Check browser console for CORS errors
 
-### Tasks not loading
-- Check authentication token is valid
+**Tasks not loading**
+- Check authentication token in localStorage
 - Verify user is logged in
-- Check browser localStorage for `authToken`
+- Check browser console for errors
+
+**Port already in use**
+- Backend: Change PORT in .env
+- Frontend: Use next available port automatically
+
+## 📝 Available Scripts
+
+### Backend
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run prisma:migrate  # Run database migrations
+```
+
+### Frontend
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+```
 
 ## 📄 License
 
 This project is open source and available under the MIT License.
-
-## 🤝 Contributing
-
-Contributions are welcome! Feel free to submit issues and pull requests.
 
 ---
 
