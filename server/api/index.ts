@@ -3,7 +3,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "../src/routes/auth";
 import taskRoutes from "../src/routes/tasks";
-import { VercelRequest, VercelResponse } from "@vercel/node";
 
 dotenv.config();
 
