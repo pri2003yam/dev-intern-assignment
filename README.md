@@ -7,8 +7,8 @@ A production-ready full-stack task management system demonstrating modern web de
 This is a complete implementation of a task management application built as a full-stack assessment project. The application showcases best practices in architecture, code quality, security, and user experience.
 
 **Live Demo:**
-- **Frontend**: https://dev-intern-assignment.vercel.app
-- **Backend API**: [Deployed on Render]
+- **Frontend**: https://dev-intern-assignment-k8dy.vercel.app/
+- **Backend API**: https://dev-intern-assignment-api.onrender.com
 - **GitHub Repository**: https://github.com/pri2003yam/dev-intern-assignment
 
 ## ✨ Core Features
