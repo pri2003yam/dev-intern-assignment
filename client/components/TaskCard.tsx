@@ -12,7 +12,6 @@ interface TaskCardProps {
 
 export function TaskCard({ task }: TaskCardProps) {
   const { mutate: deleteTask, isPending: isDeleting } = useDeleteTask();
-  const { mutate: updateTask } = useUpdateTask();
   const [isEditOpen, setIsEditOpen] = useState(false);
 
   const handleDelete = () => {
