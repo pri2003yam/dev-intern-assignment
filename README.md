@@ -324,11 +324,3 @@ npm run dev          # Start development server
 npm run build        # Build for production
 npm run start        # Start production server
 ```
-
-## 📄 License
-
-This project is open source and available under the MIT License.
-
----
-
-**Built with ❤️ as a full-stack learning project**
