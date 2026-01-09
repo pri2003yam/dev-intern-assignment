@@ -1,33 +1,21 @@
-# TaskApp - Full-Stack Task Management Application
+# Task Management Application
 
-A modern, full-stack task management application built with **Next.js 14** (frontend) and **Node.js + Express** (backend), featuring JWT authentication, real-time task management, and responsive design.
+A complete full-stack task management system with JWT authentication, PostgreSQL database, and responsive design.
 
-## 📋 Features
+**Live Demo:**
+- Frontend: https://taskapp-gamma.vercel.app
+- Backend API: https://task-management-api-production.railway.app
 
-✅ **User Authentication**
-- Sign up & login with JWT tokens
-- Refresh token mechanism for enhanced security
-- Password hashing with bcryptjs
-- Protected routes and API endpoints
+## ✨ Features
 
-✅ **Task Management**
-- Create, read, update, and delete tasks
-- Real-time search by title
-- Filter tasks by status (pending, in-progress, completed)
-- Task descriptions and timestamps
-
-✅ **Frontend**
-- Responsive design for mobile & desktop
-- React Query for efficient data fetching
-- Shadcn/UI for beautiful components
-- Sonner toast notifications
-- Next.js 14 App Router
-
-✅ **Backend**
-- Express.js REST API
-- Prisma ORM with PostgreSQL
-- Zod validation for request schemas
-- Controller-Service pattern architecture
+- **User Authentication**: Signup, login with JWT tokens and bcryptjs password hashing
+- **Task CRUD**: Create, read, update, delete tasks with full validation
+- **Search & Filter**: Search tasks by title (debounced), filter by status
+- **Protected Routes**: Middleware-based route protection on both frontend and backend
+- **Responsive Design**: Mobile-first with Tailwind CSS
+- **Real-time Feedback**: Toast notifications for all actions
+- **Type-Safe**: 100% TypeScript for full type safety
+- **Professional UI**: Shadcn/UI components with clean design
 
 ## 🚀 Quick Start
 
@@ -47,7 +35,107 @@ npm install
 # Create .env file
 cp .env.example .env
 
-# Configure your database
+# Update DATABASE_URL and JWT_SECRET in .env
+# DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+# JWT_SECRET=your-secret-key-min-32-chars
+
+# Run migrations
+npm run prisma:migrate
+
+# Start development server
+npm run dev
+# Server running on http://localhost:3001
+```
+
+### Frontend Setup
+
+```bash
+cd client
+
+# Install dependencies
+npm install
+
+# Create .env.local
+cp .env.example .env.local
+
+# Update NEXT_PUBLIC_API_URL in .env.local
+# NEXT_PUBLIC_API_URL=http://localhost:3001
+
+# Start development server
+npm run dev
+# Frontend running on http://localhost:3002
+```
+
+## 📡 API Endpoints
+
+### Authentication
+```
+POST   /auth/signup              - Register new user
+POST   /auth/login               - Login user
+GET    /auth/me                  - Get current user (protected)
+```
+
+### Tasks (All require JWT token)
+```
+POST   /tasks                    - Create task
+GET    /tasks                    - Get all tasks
+GET    /tasks?search=title       - Search by title
+GET    /tasks?status=pending     - Filter by status (pending, in-progress, completed)
+PUT    /tasks/:id                - Update task
+DELETE /tasks/:id                - Delete task
+```
+
+## 🔐 API Examples
+
+### Using cURL
+
+**Sign Up**
+```bash
+curl -X POST http://localhost:3001/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "password123"
+  }'
+```
+
+**Login**
+```bash
+curl -X POST http://localhost:3001/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "john@example.com",
+    "password": "password123"
+  }'
+```
+
+**Create Task**
+```bash
+curl -X POST http://localhost:3001/tasks \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Complete project",
+    "description": "Finish the task app",
+    "status": "in-progress"
+  }'
+```
+
+**Get Tasks with Search**
+```bash
+curl -X GET "http://localhost:3001/tasks?search=project&status=in-progress" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+### Using Postman
+
+Import the Postman collection: [Task-Management-API.postman_collection.json](./Task-Management-API.postman_collection.json)
+
+1. Open Postman → Click Import
+2. Select the JSON file
+3. Set `{{token}}` variable after login
+4. Run requests with pre-configured examples
 # DATABASE_URL="postgresql://user:password@localhost:5432/fullstack_db"
 # JWT_SECRET="your_secret_key"
 
