@@ -148,6 +148,88 @@ GET    /auth/me                  - Get current user (protected)
 ### Tasks (All require JWT token)
 ```
 POST   /tasks                    - Create task
+GET    /tasks                    - Get all tasks (with search & filter)
+GET    /tasks?search=title       - Search tasks by title
+GET    /tasks?status=pending     - Filter by status
+PUT    /tasks/:id                - Update task
+DELETE /tasks/:id                - Delete task
+```
+
+## 📖 API Examples
+
+### Using cURL
+
+**Sign Up**
+```bash
+curl -X POST http://localhost:3001/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "password123"
+  }'
+```
+
+**Login**
+```bash
+curl -X POST http://localhost:3001/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "john@example.com",
+    "password": "password123"
+  }'
+```
+
+**Get Current User**
+```bash
+curl -X GET http://localhost:3001/auth/me \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Create Task**
+```bash
+curl -X POST http://localhost:3001/tasks \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Complete project",
+    "description": "Finish the task management app",
+    "status": "in-progress"
+  }'
+```
+
+**Get All Tasks with Search**
+```bash
+curl -X GET "http://localhost:3001/tasks?search=project&status=in-progress" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Update Task**
+```bash
+curl -X PUT http://localhost:3001/tasks/TASK_ID \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Updated title",
+    "status": "completed"
+  }'
+```
+
+**Delete Task**
+```bash
+curl -X DELETE http://localhost:3001/tasks/TASK_ID \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+### Using Postman
+
+Import the provided Postman collection: [Task-Management-API.postman_collection.json](./Task-Management-API.postman_collection.json)
+
+1. Open Postman
+2. Click "Import" → Select the JSON file
+3. Collection loads with all endpoints
+4. Set `{{token}}` and `{{taskId}}` variables in collection settings
+5. Run requests with pre-configured examples
 GET    /tasks                    - Get all tasks (supports ?search= and ?status=)
 PUT    /tasks/:id                - Update task
 DELETE /tasks/:id                - Delete task
@@ -206,6 +288,22 @@ Toast notifications provide real-time feedback for:
 3. **Protected Routes**: Middleware checks for valid JWT
 4. **API Requests**: Axios interceptor automatically adds JWT header
 5. **Token Expiration**: Handles 401 responses by clearing auth
+
+## 🌐 Production Deployment
+
+The application is deployed and ready to use:
+
+- **Frontend**: https://taskapp-gamma.vercel.app
+- **Backend API**: https://task-management-api-production.railway.app
+- **API Documentation**: See [Task-Management-API.postman_collection.json](./Task-Management-API.postman_collection.json)
+
+For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
+
+Quick deployment steps:
+1. Frontend: Push to GitHub → Vercel auto-deploys
+2. Backend: Deploy to Railway with PostgreSQL
+3. Update environment variables on production platforms
+4. Run database migrations: `npx prisma migrate deploy`
 
 ## 🚀 Scalability
 
