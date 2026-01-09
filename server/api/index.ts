@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
@@ -10,36 +10,37 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Load routes dynamically at runtime
-let routesLoaded = false;
+// Import routes (will be compiled to dist)
+let authRoutes: any = null;
+let taskRoutes: any = null;
 
-async function loadRoutes() {
-  if (routesLoaded) return;
-  try {
-    const authRoutes = await import("../dist/routes/auth");
-    const taskRoutes = await import("../dist/routes/tasks");
-    
-    app.use("/auth", authRoutes.default);
-    app.use("/tasks", taskRoutes.default);
-    routesLoaded = true;
-  } catch (error) {
-    console.error("Error loading routes:", error);
-  }
+try {
+  authRoutes = require("../dist/routes/auth").default || require("../dist/routes/auth");
+  taskRoutes = require("../dist/routes/tasks").default || require("../dist/routes/tasks");
+} catch (error) {
+  console.error("Error loading routes:", error);
 }
 
 // Routes
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
   res.json({ message: "Server is running" });
 });
 
-// Error handling
-app.use((err: any, req: Request, res: Response, next: any) => {
+if (authRoutes) app.use("/auth", authRoutes);
+if (taskRoutes) app.use("/tasks", taskRoutes);
+
+// Error handling middleware
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error("Error:", err);
-  res.status(500).json({ error: "Internal server error", details: err.message });
+  res.status(500).json({ error: "Internal server error" });
+});
+
+// 404 handler
+app.use((req: Request, res: Response) => {
+  res.status(404).json({ error: "Not found" });
 });
 
 // Vercel serverless handler
-export default async (req: Request, res: Response) => {
-  await loadRoutes();
+export default (req: Request, res: Response) => {
   app(req, res);
 };
