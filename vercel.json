@@ -2,22 +2,32 @@
   "version": 2,
   "builds": [
     {
-      "src": "client/next.config.js",
-      "use": "@vercel/next"
+      "src": "client/package.json",
+      "use": "@vercel/next",
+      "config": {
+        "maxLambdaSize": "50mb"
+      }
     },
     {
-      "src": "server/dist/index.js",
-      "use": "@vercel/node"
+      "src": "server/package.json",
+      "use": "@vercel/node",
+      "config": {
+        "zeroConfig": true
+      }
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "server/dist/index.js"
+      "src": "/auth(.*)",
+      "dest": "/server"
+    },
+    {
+      "src": "/tasks(.*)",
+      "dest": "/server"
     },
     {
       "src": "/(.*)",
-      "dest": "client/next.config.js"
+      "dest": "/client"
     }
   ]
 }
