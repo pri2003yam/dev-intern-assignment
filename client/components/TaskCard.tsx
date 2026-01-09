@@ -1,6 +1,6 @@
 "use client";
 
-import { Task, useDeleteTask, useUpdateTask } from "@/hooks/useTasks";
+import { Task, useDeleteTask } from "@/hooks/useTasks";
 import { Trash2, Edit2, CheckCircle2, Clock, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
