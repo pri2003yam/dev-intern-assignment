@@ -1,19 +1,5 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/index.ts",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": "src/**",
-        "excludeFiles": "node_modules/**"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "api/index.ts"
-    }
-  ]
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist"
 }

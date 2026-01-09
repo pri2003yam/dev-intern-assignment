@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "../src/routes/auth";
@@ -21,9 +21,12 @@ app.use("/auth", authRoutes);
 app.use("/tasks", taskRoutes);
 
 // Error handling
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: any, req: Request, res: Response, next: any) => {
   console.error(err);
   res.status(500).json({ error: "Internal server error" });
 });
 
-export default app;
+// Vercel serverless handler
+export default (req: Request, res: Response) => {
+  app(req, res);
+};
