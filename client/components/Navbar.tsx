@@ -7,13 +7,15 @@ import { useUser } from "@/hooks/useUser";
 
 export function Navbar() {
   const router = useRouter();
-  const { user } = useUser();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { user } = useUser();
 
   useEffect(() => {
     // Check if user is authenticated
     const token = localStorage.getItem("authToken");
     setIsAuthenticated(!!token);
+    setMounted(true);
   }, []);
 
   const handleLogout = () => {
@@ -22,6 +24,9 @@ export function Navbar() {
     setIsAuthenticated(false);
     router.push("/login");
   };
+
+  // Don't render until mounted to avoid hydration mismatch
+  if (!mounted) return null;
 
   return (
     <nav className="border-b border-border bg-card">

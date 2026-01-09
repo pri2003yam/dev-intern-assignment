@@ -15,6 +15,14 @@ export function useUser() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+    
+    // Only fetch user if there's a token
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
+
     const fetchUser = async () => {
       try {
         const response = await api.get("/auth/me");
